@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace Assignment18
 {
@@ -17,6 +19,14 @@ namespace Assignment18
             Value = theString;
         }
         public string Value { get; private set; }
+        
+        public HashString(byte[] byteArray)
+        {
+            if (byteArray.Length != Block.HASHLEN) throw new ArgumentOutOfRangeException();
+            StringBuilder builder = new StringBuilder(Block.HASHLEN * 2);
+            foreach (byte b in byteArray) builder.AppendFormat("{0:x2}", b);
+            Value = builder.ToString();
+        }
     }
 
 
@@ -27,7 +37,11 @@ namespace Assignment18
     {
         //static
         static int nextblockid = 1;
-        static readonly int HASHLEN = 20;   //Should be in some other class
+        public static readonly int HASHLEN = 20;   //Should be in some other class
+
+        //buffer
+        private UnicodeEncoding enc = new UnicodeEncoding();
+        private HashAlgorithm sha = new SHA1CryptoServiceProvider();
 
         //Constructors
 
@@ -87,14 +101,25 @@ namespace Assignment18
         }
 
         //Methods
-        public bool IsSigned() => true; // TODO: Implementation needed
+        public bool IsSigned() => String.Equals("0000", MyHash.Substring(0, 4));
 
         public void ReHash()
         {
-            //TODO: Implementation needed
+            using (MemoryStream mstream = new MemoryStream()) {
+                BinaryWriter bw = new BinaryWriter(mstream);
+                mstream.Seek(0, SeekOrigin.Begin);
+                bw.Write(enc.GetBytes(ID.ToString().ToCharArray()));
+                bw.Write(enc.GetBytes(Nonce.ToString().ToCharArray()));
+                bw.Write(enc.GetBytes(Data.ToString().ToCharArray()));
+                bw.Write(enc.GetBytes(PreviousHash.ToString().ToCharArray()));
+                mstream.Seek(0, SeekOrigin.Begin);
+                MyHash = new HashString(sha.ComputeHash(mstream)).Value;
+            }
         }
 
-        public void Mine() { } //TODO: Implementation needed
+        public void Mine() {
+            while (!this.IsSigned()) { Nonce++; }
+        } 
 
     }
 }
