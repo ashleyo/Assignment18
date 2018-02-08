@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Assignment18"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="Visual BlockChain Simulator" Height="525" Width="725">
+    <DockPanel>
+        <ListBox DockPanel.Dock="Top" ItemsSource="{Binding Path=Blocks}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="2" BorderBrush="Blue" Margin="1,1,1,2">
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="20" />
+                                    <Setter Property="FontFamily" Value="Consolas" />
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBlock Text="{Binding Path=ID, StringFormat=ID: {0}}"></TextBlock>
+                            <TextBlock Text="{Binding Path=Nonce, StringFormat=Nonce: {0} }"></TextBlock>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Path=Data}"></TextBox>
+                            <TextBlock Text="{Binding Path=PreviousHash, StringFormat=Previous: {0}}"></TextBlock>
+                            <TextBlock Text="{Binding Path=MyHash, StringFormat=Hash:     {0}}"></TextBlock>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            
+        </ListBox>
+
+    </DockPanel>
 </Window>

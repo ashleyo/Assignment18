@@ -16,8 +16,11 @@ namespace Assignment18
     {
         public HashString(String theString)
         {
+            if (theString.Length != 40)
+                throw new InvalidDataException($"Bad length, expected 40, got {theString.Length} ");
             Value = theString;
         }
+
         public string Value { get; private set; }
         
         public HashString(byte[] byteArray)
@@ -31,7 +34,11 @@ namespace Assignment18
 
 
     /// <summary>
-    /// Represents a block in a blockchain
+    /// Represents a block in a blockchain. Has five properties: ID, Nonce, Data, 
+    /// PreviousHash (of previous block in chain), MyHash (realtime hash of the previous).
+    /// This class implements IPropertyChanged in order to allow for easy data binding, 
+    /// more unusually it listens to its own events (via InternalChangeHandler) in order
+    /// to recalculate MyHash whenever any of the other four properties changes.
     /// </summary>
     class Block : INotifyPropertyChanged
     {
@@ -45,14 +52,28 @@ namespace Assignment18
 
         //Constructors
 
-        public Block()
+        // no parms builds start block
+        public Block(String Data = "")
         {
             ID = nextblockid++;
             Nonce = 0;
-            Data = String.Empty;
-            PreviousHash = new string('0', HASHLEN);
-            ReHash();
+            this.Data = Data;
+            PreviousHash = new string('0', 2*HASHLEN);
             PropertyChanged += InternalChangeHandler;
+            ReHash();
+            Mine();
+            
+        }
+
+        public Block(Block prior, String Data="")
+        {
+            ID = nextblockid++;
+            Nonce = 0;
+            this.Data = Data;
+            PreviousHash = prior.MyHash;
+            PropertyChanged += InternalChangeHandler;
+            ReHash();
+            Mine();        
         }
 
         //Properties
@@ -119,7 +140,15 @@ namespace Assignment18
 
         public void Mine() {
             while (!this.IsSigned()) { Nonce++; }
-        } 
+        }
 
+        public override string ToString() =>
+$@"
+{ID}
+{Nonce}
+{Data}
+{PreviousHash}
+{MyHash}
+";
     }
 }

@@ -25,20 +25,13 @@ namespace Assignment18
         {
             InitializeComponent();
 
-            //put some test code here (how dirty is that!)
-            Debug.WriteLine("Started");
-
-            //Create a Block
-            Block B = new Block();
-            //Check its properties
-            B.Data = "Hello World";
-            B.Nonce = 42;
-            Debug.WriteLine($"Created Block: ID:{B.ID} Nonce:{B.Nonce} Data: {B.Data} PreviousHash: {B.PreviousHash} Hash: {B.MyHash}");
-            Debug.WriteLine(B.IsSigned() ? "Block is Signed" : "Block is Unsigned");
-            B.Mine();
-            Debug.WriteLine($"Created Block: ID:{B.ID} Nonce:{B.Nonce} Data: {B.Data} PreviousHash: {B.PreviousHash} Hash: {B.MyHash}");
-            Debug.WriteLine(B.IsSigned() ? "Block is Signed" : "Block is Unsigned");
-            Application.Current.MainWindow.Close();
+            BlockChain theChain = new BlockChain();
+            this.DataContext = theChain;
         }
     }
 }
+
+
+//TODO Add Button for 'Mine', remove auto-mine
+//TODO Bind background colour to 'IsSigned'
+//TODO Make Item binding two-way for the text in Data
