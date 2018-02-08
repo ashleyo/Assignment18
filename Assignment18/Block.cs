@@ -84,7 +84,9 @@ namespace Assignment18
         public int Nonce { get => nonce; set => SetField(ref nonce, value, nameof(Nonce)); }
 
         private string data;
-        public string Data { get => data; set => SetField(ref data, value, nameof(Data)); }
+        public string Data {
+            get => data;
+            set => SetField(ref data, value, nameof(Data)); }
 
         private HashString previousHash;
         public string PreviousHash {
@@ -116,7 +118,7 @@ namespace Assignment18
             return true;
         }
 
-        private void InternalChangeHandler(object sender, PropertyChangedEventArgs e)
+        public void InternalChangeHandler(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "MyHash") ReHash();
         }

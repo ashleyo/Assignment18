@@ -21,12 +21,24 @@ namespace Assignment18
     /// </summary>
     public partial class MainWindow : Window
     {
+        BlockChain theChain;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            BlockChain theChain = new BlockChain();
+            theChain = new BlockChain();
             this.DataContext = theChain;
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

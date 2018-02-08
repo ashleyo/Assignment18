@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Visual BlockChain Simulator" Height="525" Width="725">
     <DockPanel>
-        <ListBox DockPanel.Dock="Top" ItemsSource="{Binding Path=Blocks}">
+        <ListBox TextBoxBase.TextChanged="TextBox_TextChanged" Name="BCVisual" DockPanel.Dock="Top" ItemsSource="{Binding Path=Blocks}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border BorderThickness="2" BorderBrush="Blue" Margin="1,1,1,2">
@@ -20,9 +20,10 @@
                             </StackPanel.Resources>
                             <TextBlock Text="{Binding Path=ID, StringFormat=ID: {0}}"></TextBlock>
                             <TextBlock Text="{Binding Path=Nonce, StringFormat=Nonce: {0} }"></TextBlock>
-                            <TextBox TextWrapping="Wrap" Text="{Binding Path=Data}"></TextBox>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Path=Data, Mode=TwoWay}"></TextBox>
                             <TextBlock Text="{Binding Path=PreviousHash, StringFormat=Previous: {0}}"></TextBlock>
                             <TextBlock Text="{Binding Path=MyHash, StringFormat=Hash:     {0}}"></TextBlock>
+                            <Button Click="Button_Click" Width="80" HorizontalAlignment="Center">Mine</Button>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
