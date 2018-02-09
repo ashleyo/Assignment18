@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Windows.Threading;
+using System.Globalization;
 
 namespace Assignment18
 {
@@ -36,14 +38,41 @@ namespace Assignment18
 
         }
 
+
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
+            Button B = sender as Button;
+            Block blck = B.DataContext as Block;
+            blck.Mine();           
         }
     }
+
+    public static class ExtensionMethods
+    {
+
+        private static Action EmptyDelegate = delegate () { };
+
+
+        public static void Refresh(this UIElement uiElement)
+        {
+            uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+        }
+    }
+
+    public class SignedToBackgroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => (bool)value ? Brushes.PaleGreen : Brushes.Pink;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => DependencyProperty.UnsetValue;
+    }
+
+
+
 }
 
 
-//TODO Add Button for 'Mine', remove auto-mine
-//TODO Bind background colour to 'IsSigned'
-//TODO Make Item binding two-way for the text in Data
+
+//TODO 'Pending' indicator needed for working for new hash

@@ -5,22 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Assignment18"
         mc:Ignorable="d"
-        Title="Visual BlockChain Simulator" Height="525" Width="725">
+        Title="Visual BlockChain Simulator" Height="525" Width="625">
+    <Window.Resources>
+        <local:SignedToBackgroundConverter x:Key="BackgroundConverter" />
+    </Window.Resources>
     <DockPanel>
         <ListBox TextBoxBase.TextChanged="TextBox_TextChanged" Name="BCVisual" DockPanel.Dock="Top" ItemsSource="{Binding Path=Blocks}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderThickness="2" BorderBrush="Blue" Margin="1,1,1,2">
-                        <StackPanel>
+                    <Border BorderThickness="2" CornerRadius="5"  BorderBrush="LightBlue" Margin="1,1,1,2">
+                        <StackPanel Margin="2,2,2,2" Height="220"  Background="{Binding Path=Signed, Converter={StaticResource ResourceKey=BackgroundConverter}}">
                             <StackPanel.Resources>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="20" />
                                     <Setter Property="FontFamily" Value="Consolas" />
+                                    <Setter Property="Margin" Value="5,2,5,1" />
+                                </Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="FontSize" Value="12" />
+                                    <Setter Property="FontFamily" Value="Helvetica" />
+                                    <Setter Property="Margin" Value="2,2,5,1" />
                                 </Style>
                             </StackPanel.Resources>
                             <TextBlock Text="{Binding Path=ID, StringFormat=ID: {0}}"></TextBlock>
                             <TextBlock Text="{Binding Path=Nonce, StringFormat=Nonce: {0} }"></TextBlock>
-                            <TextBox TextWrapping="Wrap" Text="{Binding Path=Data, Mode=TwoWay}"></TextBox>
+                            <TextBox MinLines="5" HorizontalAlignment="Right" Width="440" TextWrapping="Wrap" Text="{Binding Path=Data, Mode=TwoWay}"></TextBox>
                             <TextBlock Text="{Binding Path=PreviousHash, StringFormat=Previous: {0}}"></TextBlock>
                             <TextBlock Text="{Binding Path=MyHash, StringFormat=Hash:     {0}}"></TextBlock>
                             <Button Click="Button_Click" Width="80" HorizontalAlignment="Center">Mine</Button>

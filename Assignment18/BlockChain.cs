@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Data;
 
 namespace Assignment18
 {
@@ -25,4 +29,6 @@ namespace Assignment18
             }
         }
     }
+
+    
 }

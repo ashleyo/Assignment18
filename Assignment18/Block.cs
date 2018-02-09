@@ -43,37 +43,41 @@ namespace Assignment18
     class Block : INotifyPropertyChanged
     {
         //static
-        static int nextblockid = 1;
+        private static int nextblockid = 1;
         public static readonly int HASHLEN = 20;   //Should be in some other class
+        private static UnicodeEncoding enc = new UnicodeEncoding();
+        private static HashAlgorithm sha = new SHA1CryptoServiceProvider();
 
-        //buffer
-        private UnicodeEncoding enc = new UnicodeEncoding();
-        private HashAlgorithm sha = new SHA1CryptoServiceProvider();
+        //Fields
+        private Block previousBlock;
 
         //Constructors
 
         // no parms builds start block
         public Block(String Data = "")
         {
+            previousBlock = null;
             ID = nextblockid++;
             Nonce = 0;
             this.Data = Data;
             PreviousHash = new string('0', 2*HASHLEN);
             PropertyChanged += InternalChangeHandler;
             ReHash();
-            Mine();
+            //Mine();
             
         }
 
         public Block(Block prior, String Data="")
         {
+            previousBlock = prior;
             ID = nextblockid++;
             Nonce = 0;
             this.Data = Data;
-            PreviousHash = prior.MyHash;
+            PreviousHash = previousBlock.MyHash;
             PropertyChanged += InternalChangeHandler;
+            previousBlock.PropertyChanged += PreviousHashChangeHandler;
             ReHash();
-            Mine();        
+            //Mine();        
         }
 
         //Properties
@@ -101,7 +105,15 @@ namespace Assignment18
         public string MyHash
         {
             get { return myHash.Value; }
-            private set { myHash = new HashString(value); }
+            private set { myHash = new HashString(value); NotifyPropertyChanged(); }
+        }
+
+        //Properties (no-prop changed)
+
+        private bool signed;
+        public bool Signed {
+            get => signed;
+            private set => SetField(ref signed, value, nameof(Signed));
         }
 
         //Property Change Handlers
@@ -123,8 +135,22 @@ namespace Assignment18
             if (e.PropertyName != "MyHash") ReHash();
         }
 
+        public void PreviousHashChangeHandler(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "MyHash")
+            {
+                PreviousHash = previousBlock.MyHash;
+            }
+        }
+
+
+
         //Methods
-        public bool IsSigned() => String.Equals("0000", MyHash.Substring(0, 4));
+        public bool IsSigned()
+        {
+            Signed = String.Equals("0000", MyHash.Substring(0, 4));
+            return Signed;
+        }
 
         public void ReHash()
         {
