@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Windows.Threading;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Assignment18
 {
@@ -23,7 +24,10 @@ namespace Assignment18
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         BlockChain theChain;
+
+        private static Action NoOp = delegate () { };
 
         public MainWindow()
         {
@@ -33,30 +37,15 @@ namespace Assignment18
             this.DataContext = theChain;
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button B = sender as Button;
             Block blck = B.DataContext as Block;
-            blck.Mine();           
-        }
-    }
-
-    public static class ExtensionMethods
-    {
-
-        private static Action EmptyDelegate = delegate () { };
-
-
-        public static void Refresh(this UIElement uiElement)
-        {
-            uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+            B.IsEnabled = false;
+            B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(()=>{ }));
+            //Task.Run((Action)blck.Mine);
+            blck.Mine();
+            B.IsEnabled = true;
         }
     }
 
@@ -75,4 +64,6 @@ namespace Assignment18
 
 
 
-//TODO 'Pending' indicator needed for working for new hash
+//TODO Would prefer an hourglass or similar to the ferocious numbers when mining .. it looks a little naff
+//plus ... nasty crashes if you try to mine two blocks at once so doing it the 'right' way - on a non-UI thread
+//opens nasty cans of wormses.
