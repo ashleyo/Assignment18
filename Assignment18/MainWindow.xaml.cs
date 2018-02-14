@@ -40,12 +40,23 @@ namespace Assignment18
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button B = sender as Button;
-            Block blck = B.DataContext as Block;
+
             B.IsEnabled = false;
-            B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(() => { }));
-            //Task.Run((Action)blck.Mine);
-            blck.Mine();
-            B.IsEnabled = true;
+            Block blck = B.DataContext as Block;
+            B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(() => { })); //without this UI will not update before starting the mine
+                       
+            //Task.Run((Action)blck.Mine); //In principle this is better, not on UI thread, in practice huge care is needed
+                                           //with reentrancy when another button press occurs before the first is finished
+                                           //Also all descendant blocks update needlessly slowing everything down
+
+            if (!theChain.Mining)
+                using (new BusyCursor())
+                {
+                    theChain.Mining = true;                   
+                    blck.Mine();
+                    theChain.Mining = false;
+                }
+           B.IsEnabled = true;           
         }
 
         private void ExitCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -80,14 +91,22 @@ namespace Assignment18
         );
     }
 
-
-
-
-
+    public class BusyCursor:IDisposable
+    {
+        private Cursor previous;
+        public BusyCursor()
+        {
+            previous = Mouse.OverrideCursor;
+            Mouse.OverrideCursor = Cursors.Wait;
+        }
+        public void Dispose() => Mouse.OverrideCursor = previous;
+    }
 }
 
 
 
-//TODO Would prefer an hourglass or similar to the ferocious numbers when mining .. it looks a little naff
-//plus ... nasty crashes if you try to mine two blocks at once so doing it the 'right' way - on a non-UI thread
+//TODO Would prefer an hourglass or similar ... nasty crashes if you try to mine two blocks at once 
+//so doing it the 'right' way - on a non-UI thread
 //opens nasty cans of wormses. Reverted this back to single-threaded with button visibly disabled while mining 
+
+//TODO NEEDS AN HOURGLASS!!

@@ -17,40 +17,36 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-    <DockPanel Grid.Row="0" ScrollViewer.CanContentScroll="True">
-        <ListBox Name="BCVisual" DockPanel.Dock="Top" ItemsSource="{Binding Path=Blocks}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderThickness="2" CornerRadius="5"  BorderBrush="LightBlue" Margin="1,1,1,2">
-                        <StackPanel Margin="2,2,2,2" Height="220"  Background="{Binding Path=Signed, Converter={StaticResource ResourceKey=BackgroundConverter}}">
-                            <StackPanel.Resources>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="20" />
-                                    <Setter Property="FontFamily" Value="Consolas" />
-                                    <Setter Property="Margin" Value="5,2,5,1" />
-                                </Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="FontSize" Value="12" />
-                                    <Setter Property="FontFamily" Value="Helvetica" />
-                                    <Setter Property="Margin" Value="2,2,5,1" />
-                                </Style>
-                            </StackPanel.Resources>
-                            <TextBlock Text="{Binding Path=ID, StringFormat=ID: {0}}"/>
-                            <TextBlock Text="{Binding Path=Nonce, StringFormat=Nonce: {0} }"/>
-                            <TextBox MinLines="5" HorizontalAlignment="Right" Width="440" TextWrapping="Wrap" Text="{Binding Path=Data, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Text="{Binding Path=PreviousHash,  StringFormat=Previous: {0}}" />
-                            <TextBlock Text="{Binding Path=MyHash, StringFormat=Hash:     {0}}"/>
-                            <Button Click="Button_Click" Width="80" HorizontalAlignment="Center">Mine</Button>
-                            
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            
-        </ListBox>
-        
-
-    </DockPanel>
+    <DockPanel Grid.Row="0">
+            <ListBox ScrollViewer.CanContentScroll="False" DockPanel.Dock="Top" ItemsSource="{Binding Path=Blocks}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="2" CornerRadius="5"  BorderBrush="LightBlue" Margin="1,1,1,2">
+                            <StackPanel Margin="2,2,2,2" Height="220"  Background="{Binding Path=Signed, Converter={StaticResource ResourceKey=BackgroundConverter}}">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="20" />
+                                        <Setter Property="FontFamily" Value="Consolas" />
+                                        <Setter Property="Margin" Value="5,2,5,1" />
+                                    </Style>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="FontSize" Value="12" />
+                                        <Setter Property="FontFamily" Value="Helvetica" />
+                                        <Setter Property="Margin" Value="2,2,5,1" />
+                                    </Style>
+                                </StackPanel.Resources>
+                                <TextBlock Text="{Binding Path=ID, StringFormat=ID: {0}}"/>
+                                <TextBlock Text="{Binding Path=Nonce, StringFormat=Nonce: {0} }"/>
+                                <TextBox MinLines="5" HorizontalAlignment="Right" Width="440" TextWrapping="Wrap" Text="{Binding Path=Data, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="{Binding Path=PreviousHash,  StringFormat=Previous: {0}}" />
+                                <TextBlock Text="{Binding Path=MyHash, StringFormat=Hash:     {0}}"/>
+                                <Button Click="Button_Click" Width="80" HorizontalAlignment="Center">Mine</Button>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
         <Button Grid.Row="1" Width="80" HorizontalAlignment="Left" Command="local:CustomCommands.Exit" Content="Exit" />
     </Grid>
 </Window>

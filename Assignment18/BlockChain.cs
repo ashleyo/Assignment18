@@ -17,6 +17,8 @@ namespace Assignment18
     {
         public ObservableCollection<Block> Blocks { get; }
 
+        public bool Mining = false;
+
         public BlockChain()
         {
             Blocks = new ObservableCollection<Block>();

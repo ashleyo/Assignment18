@@ -43,10 +43,10 @@ namespace Assignment18
     class Block : INotifyPropertyChanged
     {
         //static
-        private static int nextblockid = 1;
+        private static uint nextblockid = 1;
         public static readonly int HASHLEN = 20;   //Should be in some other class
         private static UnicodeEncoding enc = new UnicodeEncoding();
-        private static HashAlgorithm sha = new SHA1CryptoServiceProvider();
+        private HashAlgorithm sha = new SHA1CryptoServiceProvider();
 
         //Fields
         private Block previousBlock;
@@ -81,11 +81,11 @@ namespace Assignment18
         }
 
         //Properties
-        private int id;
-        public int ID { get => id; set => SetField(ref id, value, nameof(ID)); }
+        private uint id;
+        public uint ID { get => id; set => SetField(ref id, value, nameof(ID)); }
 
-        private int nonce;
-        public int Nonce { get => nonce; set => SetField(ref nonce, value, nameof(Nonce)); }
+        private uint nonce;
+        public uint Nonce { get => nonce; set => SetField(ref nonce, value, nameof(Nonce)); }
 
         private string data;
         public string Data
@@ -171,6 +171,7 @@ namespace Assignment18
 
         public void Mine()
         {
+            Nonce = 1;
             while (!this.IsSigned()) { Nonce++; }
         }
 
