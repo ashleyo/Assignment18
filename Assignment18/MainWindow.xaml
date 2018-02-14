@@ -9,7 +9,15 @@
     <Window.Resources>
         <local:SignedToBackgroundConverter x:Key="BackgroundConverter" />
     </Window.Resources>
-    <DockPanel ScrollViewer.CanContentScroll="True">
+    <Window.CommandBindings>
+        <CommandBinding Command="local:CustomCommands.Exit" CanExecute="ExitCommand_CanExecute" Executed="ExitCommand_Executed" />
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+    <DockPanel Grid.Row="0" ScrollViewer.CanContentScroll="True">
         <ListBox Name="BCVisual" DockPanel.Dock="Top" ItemsSource="{Binding Path=Blocks}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -33,12 +41,16 @@
                             <TextBlock Text="{Binding Path=PreviousHash,  StringFormat=Previous: {0}}" />
                             <TextBlock Text="{Binding Path=MyHash, StringFormat=Hash:     {0}}"/>
                             <Button Click="Button_Click" Width="80" HorizontalAlignment="Center">Mine</Button>
+                            
                         </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
             
         </ListBox>
+        
 
     </DockPanel>
+        <Button Grid.Row="1" Width="80" HorizontalAlignment="Left" Command="local:CustomCommands.Exit" Content="Exit" />
+    </Grid>
 </Window>

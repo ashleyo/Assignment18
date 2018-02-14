@@ -24,7 +24,7 @@ namespace Assignment18
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
         BlockChain theChain;
 
         private static Action NoOp = delegate () { };
@@ -42,10 +42,20 @@ namespace Assignment18
             Button B = sender as Button;
             Block blck = B.DataContext as Block;
             B.IsEnabled = false;
-            B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(()=>{ }));
+            B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(() => { }));
             //Task.Run((Action)blck.Mine);
             blck.Mine();
             B.IsEnabled = true;
+        }
+
+        private void ExitCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void ExitCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 
@@ -58,6 +68,20 @@ namespace Assignment18
             => DependencyProperty.UnsetValue;
     }
 
+    public static class CustomCommands
+    {
+        public static readonly RoutedUICommand Exit = new RoutedUICommand(
+            "Exit",
+            "Exit",
+            typeof(CustomCommands),
+            new InputGestureCollection() {
+                new KeyGesture(Key.F4, ModifierKeys.Alt)
+            }
+        );
+    }
+
+
+
 
 
 }
@@ -66,4 +90,4 @@ namespace Assignment18
 
 //TODO Would prefer an hourglass or similar to the ferocious numbers when mining .. it looks a little naff
 //plus ... nasty crashes if you try to mine two blocks at once so doing it the 'right' way - on a non-UI thread
-//opens nasty cans of wormses.
+//opens nasty cans of wormses. Reverted this back to single-threaded with button visibly disabled while mining 
