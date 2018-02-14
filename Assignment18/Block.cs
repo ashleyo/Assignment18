@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
 using System.Security.Cryptography;
+[assembly:InternalsVisibleTo("UnitTestProject1")]
 
 namespace Assignment18
 {
 
     class HashString
     {
+        public static HashString Origin = new HashString(new string('0', 2 * Block.HASHLEN));
+
         public HashString(String theString)
         {
             if (theString.Length != 40)
@@ -60,11 +63,9 @@ namespace Assignment18
             ID = nextblockid++;
             Nonce = 0;
             this.Data = Data;
-            PreviousHash = new string('0', 2 * HASHLEN);
+            PreviousHash = HashString.Origin.Value;
             PropertyChanged += InternalChangeHandler;
             ReHash();
-            //Mine();
-
         }
 
         public Block(Block prior, String Data = "")
@@ -77,7 +78,6 @@ namespace Assignment18
             PropertyChanged += InternalChangeHandler;
             previousBlock.PropertyChanged += PreviousHashChangeHandler;
             ReHash();
-            //Mine();        
         }
 
         //Properties
@@ -171,7 +171,7 @@ namespace Assignment18
 
         public void Mine()
         {
-            Nonce = 1;
+            Nonce = 0;
             while (!this.IsSigned()) { Nonce++; }
         }
 

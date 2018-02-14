@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Data;
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTestProject1")]
 
 namespace Assignment18
 {
