@@ -40,23 +40,18 @@ namespace Assignment18
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button B = sender as Button;
-
-            B.IsEnabled = false;
-            Block blck = B.DataContext as Block;
-            B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(() => { })); //without this UI will not update before starting the mine
-                       
-            //Task.Run((Action)blck.Mine); //In principle this is better, not on UI thread, in practice huge care is needed
-                                           //with reentrancy when another button press occurs before the first is finished
-                                           //Also all descendant blocks update needlessly slowing everything down
-
-            if (!theChain.Mining)
-                using (new BusyCursor())
+            Block blck = B.DataContext as Block;                      
+            if (!theChain.Mining) //try to stop some other block mining at same time
+                using (new BusyCursor(B))
                 {
-                    theChain.Mining = true;                   
+                    theChain.Mining = true;
+                    B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(() => { })); //without this UI will not update before starting the mine
                     blck.Mine();
+                        //Task.Run((Action)blck.Mine); //In principle this is better, not on UI thread, in practice huge care is needed
+                        //with reentrancy when another button press occurs before the first is finished
+                        //Also all descendant blocks update needlessly slowing everything down
                     theChain.Mining = false;
-                }
-           B.IsEnabled = true;           
+                }      
         }
 
         private void ExitCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -93,13 +88,23 @@ namespace Assignment18
 
     public class BusyCursor:IDisposable
     {
-        private Cursor previous;
-        public BusyCursor()
+        private Cursor previousCursor;
+        private bool previousEnabled;
+        private Control theControl;
+
+        public BusyCursor(Control C)
         {
-            previous = Mouse.OverrideCursor;
+            theControl = C;
+            previousCursor = Mouse.OverrideCursor;
+            previousEnabled = theControl.IsEnabled;
             Mouse.OverrideCursor = Cursors.Wait;
+            theControl.IsEnabled = false;
         }
-        public void Dispose() => Mouse.OverrideCursor = previous;
+        public void Dispose()
+        {
+            Mouse.OverrideCursor = previousCursor;
+            theControl.IsEnabled = previousEnabled;
+        }
     }
 }
 

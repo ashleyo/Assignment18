@@ -22,7 +22,7 @@ namespace Assignment18
         public BlockChain()
         {
             Blocks = new ObservableCollection<Block>();
-            Block B = new Block(); //starting block
+            Block B = new Block("For single lower-case alpha on the origin block 'l' with a nonce of 4294 is quickest to mine and x with 261301 slowest."); //starting block
             Blocks.Add(B);
             foreach (int i in Enumerable.Range(1, 4))
             {
