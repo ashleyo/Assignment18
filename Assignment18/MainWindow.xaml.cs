@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
 using System.Windows.Threading;
-using System.Globalization;
-using System.ComponentModel;
 
 namespace Assignment18
 {
@@ -25,7 +15,7 @@ namespace Assignment18
     public partial class MainWindow : Window
     {
 
-        BlockChain theChain;
+        private BlockChain theChain;
 
         private static Action NoOp = delegate () { };
 
@@ -41,16 +31,16 @@ namespace Assignment18
         {
             Button B = sender as Button;
             Block blck = B.DataContext as Block;                      
-            if (!theChain.Mining) //try to stop some other block mining at same time
+            if (!theChain.IsMining) //try to stop some other block mining at same time
                 using (new BusyCursor(B))
                 {
-                    theChain.Mining = true;
+                    theChain.IsMining = true;
                     B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(() => { })); //without this UI will not update before starting the mine
                     blck.Mine();
                         //Task.Run((Action)blck.Mine); //In principle this is better, not on UI thread, in practice huge care is needed
                         //with reentrancy when another button press occurs before the first is finished
                         //Also all descendant blocks update needlessly slowing everything down
-                    theChain.Mining = false;
+                    theChain.IsMining = false;
                 }      
         }
 
@@ -65,6 +55,9 @@ namespace Assignment18
         }
     }
 
+    /// <summary>
+    /// ValueConverter. Maps true->PaleGreen and false->Pink. No ConvertBack defined.
+    /// </summary>
     public class SignedToBackgroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -74,6 +67,9 @@ namespace Assignment18
             => DependencyProperty.UnsetValue;
     }
 
+    /// <summary>
+    /// Defines an Exit CustomCommand
+    /// </summary>
     public static class CustomCommands
     {
         public static readonly RoutedUICommand Exit = new RoutedUICommand(
@@ -86,6 +82,15 @@ namespace Assignment18
         );
     }
 
+    /// <summary>
+    /// defines an horglass for use by long running code
+    /// </summary>
+    /// <remarks>
+    /// Usage:
+    /// <code>
+    /// using (new BusyCursor(b)){ ... } 
+    /// </code>
+    /// </remarks>
     public class BusyCursor:IDisposable
     {
         private Cursor previousCursor;
@@ -107,11 +112,3 @@ namespace Assignment18
         }
     }
 }
-
-
-
-//TODO Would prefer an hourglass or similar ... nasty crashes if you try to mine two blocks at once 
-//so doing it the 'right' way - on a non-UI thread
-//opens nasty cans of wormses. Reverted this back to single-threaded with button visibly disabled while mining 
-
-//TODO NEEDS AN HOURGLASS!!

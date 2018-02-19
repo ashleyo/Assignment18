@@ -19,7 +19,7 @@ namespace UnitTestProject1
             Assert.AreEqual("Hello World!", B.Data);
             Assert.AreEqual(HashString.Origin.Value, B.PreviousHash);
             Assert.AreEqual("04f660de81972eae51939adc0bc802abb654e55d", B.MyHash);
-            Assert.IsFalse(B.IsSigned());
+            Assert.IsFalse(B.Signed);
         }
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace UnitTestProject1
         {
             Block B = OriginBlock; 
             B.Mine();
-            Assert.IsTrue(B.IsSigned());
+            Assert.IsTrue(B.Signed);
             Assert.AreEqual(41929u, B.Nonce);
             Assert.AreEqual("0000eb2252a2a022fd75007c9073fb8835b2dcb5", B.MyHash);
         }
@@ -39,7 +39,7 @@ namespace UnitTestProject1
             HashString HS = new HashString(B.MyHash);
             B.Data = "Some other data";
             Assert.AreNotEqual(HS.Value, B.MyHash); //is different
-            Assert.IsFalse(B.IsSigned());
+            Assert.IsFalse(B.Signed);
         }
     }
 }
