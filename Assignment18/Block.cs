@@ -212,7 +212,7 @@ namespace Assignment18
             using (MemoryStream mstream = new MemoryStream())
             {
                 BinaryWriter bw = new BinaryWriter(mstream);
-                mstream.Seek(0, SeekOrigin.Begin);
+                mstream.Seek(0, SeekOrigin.Begin); //remove?
                 bw.Write(enc.GetBytes(ID.ToString().ToCharArray()));
                 bw.Write(enc.GetBytes(Nonce.ToString().ToCharArray()));
                 bw.Write(enc.GetBytes(Data.ToString().ToCharArray()));

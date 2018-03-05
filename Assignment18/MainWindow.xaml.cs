@@ -1,5 +1,10 @@
-﻿using System;
+﻿//Do not use in production
+//#define AsyncMining
+using System;
 using System.Globalization;
+#if AsyncMining
+using System.Threading.Tasks;
+#endif
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -36,10 +41,16 @@ namespace Assignment18
                 {
                     theChain.IsMining = true;
                     B.Dispatcher.Invoke(DispatcherPriority.Input, (Action)(() => { })); //without this UI will not update before starting the mine
+#if AsyncMining
+                    //In principle this is better, not on UI thread, in practice more care is needed
+                    //with reentrancy to stope another button press that occurs before the first is finished
+                    //causing an exception.
+                    //Also all descendant blocks update needlessly, slowing everything down
+                    //Therefore should not currently be enabled except for testing
+                    Task.Run((Action)blck.Mine);
+#else
                     blck.Mine();
-                        //Task.Run((Action)blck.Mine); //In principle this is better, not on UI thread, in practice huge care is needed
-                        //with reentrancy when another button press occurs before the first is finished
-                        //Also all descendant blocks update needlessly slowing everything down
+#endif
                     theChain.IsMining = false;
                 }      
         }
